@@ -1,0 +1,100 @@
+<div class="row">
+  <div class="col-12 grid-margin">
+    <div class="card">
+      <div class="card-header d-flex align-items-baseline justify-content-between">
+        <h4 class="card-title mr-2">Shop List</h4>
+        <div class="d-flex align-items-center">
+          <label class="mr-2">Service Area</label>
+          <app-select-dropdown [list]="serviceAreaList"    [placeholder]="'Select Service Area'" (valueChange)="getShopFilter($event)">
+          </app-select-dropdown>
+        </div>
+        <!-- <div class="input-group w-25">
+            <div class="input-group-prepend">
+                <div class="input-group-text" id="btnGroupAddon">
+                    <i class="mdi mdi-magnify"></i>
+                </div>
+            </div>
+            <input type="text" class="form-control bg-light" placeholder="Search" aria-label="Search"
+                aria-describedby="btnGroupAddon">
+        </div> -->
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>
+                  Shop Name
+                </th>
+                <th>
+                  Address
+                </th>
+                <th>
+                  Service Area
+                </th>
+                <th>
+                  Status
+                </th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let s of shopList | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize">
+                <td>
+                  <img [src]="s.shopBannerReference.url" class="mr-2" alt="image">
+                  {{s.name}}
+                </td>
+                <td>
+                  {{s.address.addressLine1}},
+                  {{s.address.addressLine2}},
+                  {{s.address.stateDetails.name}},
+                  {{s.address.stateDetails.countryDetails.name}}
+                </td>
+                <td>
+                  {{s.serviceID.name}}
+                </td>
+                <td>
+                  <label class="switch">
+                    <input type="checkbox" [checked]="s.status" (change)="toggleShop($event,s.id)">
+                    <span class="slider round"></span>
+                  </label>
+                  <!-- <label class="badge badge-success" *ngIf="s.status">Enabled</label>
+                  <label class="badge badge-danger" *ngIf="!s.status">Disabled</label> -->
+                </td>
+                <td class="d-flex justify-content-around">
+                  <i class="mdi mdi-pencil-box mdi-24px text-primary c-pointer" data-toggle="modal" data-target="#editModal"
+                    (click)="editShop=s"></i>
+                  <i class="mdi mdi-delete mdi-24px text-danger c-pointer" (click)="deleteShop(s.id)"></i>
+                  <i class="mdi mdi-plus-circle mdi-24px text-info c-pointer" (click)="addItem(s.id)" title="Add Item"></i>
+                  <i class="mdi mdi-format-list-bulleted mdi-24px text-warning c-pointer" (click)="viewItems(s.id)"
+                    title="View Items"></i>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <!-- <ngb-pagination class="d-flex justify-content-center" [collectionSize]="120" [(page)]="page" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"></ngb-pagination> -->
+          <!-- <ngb-pagination *ngIf="shopList != null && shopList.length>0" [collectionSize]="shopList.length" [(page)]="page" [maxSize]="pageSize" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"></ngb-pagination> -->
+          <ngb-pagination class="d-flex justify-content-center" *ngIf="shopList != null && shopList.length>0"
+            [collectionSize]="shopList.length" [(page)]="page" [pageSize]="pageSize" [boundaryLinks]="true"></ngb-pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<app-confirm-dialog></app-confirm-dialog>
+<div class="modal" tabindex="-1" role="dialog" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Shop</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <app-add-shop [edit]="true" [editShop]="editShop" (updated)="getShops()"></app-add-shop>
+      </div>
+    </div>
+  </div>
+</div>
